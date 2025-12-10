@@ -19,10 +19,9 @@ const Verify = () => {
       });
       if (response.data.success) {
         navigate("/myorders");
-        console.log(response.data.success, response.data);
+        
       } else {
         navigate("/");
-        console.log(response.data.success, response.data);
       }
     } catch (error) {
       console.log(error);
