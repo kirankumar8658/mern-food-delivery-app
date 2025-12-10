@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIP_SECRET_KEY);
 
 //placing user order for frontend
 export const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5174";
+  const frontend_url = "https://mern-food-delivery-frontend-aufx.onrender.com";
   try {
     const newOrder = new orderModel({
       userId: req.userId,
