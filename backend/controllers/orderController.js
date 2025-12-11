@@ -40,8 +40,8 @@ export const placeOrder = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: line_items,
       mode: "payment",
-      success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
-      cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
+      success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}&session_id={CHECKOUT_SESSION_ID}`,
     });
     res.json({ success: true, session_url: session.url });
   } catch (error) {
@@ -52,20 +52,19 @@ export const placeOrder = async (req, res) => {
 };
 // In orderController.js
 export const verifyOrder = async (req, res) => {
-  const { orderId, success } = req.body; // 'success' is now a boolean from the frontend
+  const { orderId, sessionId } = req.body; // 'success' is now a boolean from the frontend
 
   try {
     if (!orderId) {
       return res.json({ success: false, message: "Order ID is required" });
     }
 
-    if (success) {
-      // Simpler check
-      await orderModel.findByIdAndUpdate(orderId, { payment: true });
-      return res.json({ success: true, message: "Paid" });
+if (req.body.success) { // If you kept sending success from the frontend
+        await orderModel.findByIdAndUpdate(orderId, { payment: true });
+        return res.json({ success: true, message: "Paid" });
     } else {
-      await orderModel.findByIdAndDelete(orderId);
-      return res.json({ success: false, message: "Not Paid" });
+        await orderModel.findByIdAndDelete(orderId);
+        return res.json({ success: false, message: "Not Paid" });
     }
   } catch (error) {
     console.log(error); // **Check your backend console for the actual error here**

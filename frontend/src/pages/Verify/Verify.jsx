@@ -8,6 +8,7 @@ const Verify = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const success = searchParams.get("success") === "true"; // This ensures 'success' is a boolean
   const orderId = searchParams.get("orderId");
+  const sessionId = searchParams.get("session_id");
   const { url } = useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -16,6 +17,7 @@ const Verify = () => {
       const response = await axios.post(url + "/api/order/verify", {
         success,
         orderId,
+        sessionId
       });
       if (response.data.success) {
         navigate("/myorders");
